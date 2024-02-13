@@ -12,12 +12,12 @@ users = {'John': {
          'Jane': {
          'Name and Surname': 'Jane Doe',
          'Password': '12345678',
-},
-    'Olcay': {
-    'Name and Surname': 'Olcay Soyuhan',
-    'Password': '1923',
-}
-}
+         },
+         'Olcay': {
+         'Name and Surname': 'Olcay Soyuhan',
+         'Password': '1923',
+         }
+         }
 
 def clear_screen() -> None:
     """
