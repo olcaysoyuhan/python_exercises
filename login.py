@@ -12,12 +12,13 @@ users = {'John': {
          'Jane': {
          'Name and Surname': 'Jane Doe',
          'Password': '12345678',
-         },
-         'Olcay': {
-         'Name and Surname': 'Olcay Soyuhan',
-         'Password': '1923',
-         }
-         }
+},
+    'Olcay': {
+    'Name and Surname': 'Olcay Soyuhan',
+    'Password': '1923',
+}
+}
+
 
 def clear_screen() -> None:
     """
@@ -25,10 +26,20 @@ def clear_screen() -> None:
     Input : None
     Output : None
     """
-    if os.name == 'nt':
+    if os.name == 'nt': # 'nt' -> Windows software
         os.system('cls')
-    else:
+    else: # OSX or Linux distr.
         os.system('clear')
+
+
+def sleep_screen() -> None:
+    """
+    This function sleep the terminal
+    Input : None
+    Output : None
+    """
+    sleep(1)
+
 
 def login_form() -> str:
     """
@@ -48,6 +59,7 @@ def login_form() -> str:
     else:
         clear_screen()
 
+
 def user_control(user_name: str):
     """
     This function controls user logout operations
@@ -56,9 +68,10 @@ def user_control(user_name: str):
     """
     if user_name.lower() == 'q':
         print('Çıkış yapılıyor...')
-        sleep(2)
+        sleep_screen()
         return False
     return user_name_control(user_name)
+
 
 def user_name_control(user_name) -> str:
     """
@@ -68,7 +81,10 @@ def user_name_control(user_name) -> str:
     """
     if user_name in users:
         return user_name
+    print('Kullanıcı adı bulunamadı!')
+    sleep_screen()
     return login_form()
+
 
 def password_control(user_name: str) -> bool:
     """
@@ -79,17 +95,21 @@ def password_control(user_name: str) -> bool:
     user_access = 3
     while user_access:
         clear_screen()
-        user_password = input('Parola :').strip()
+        user_password = input(f'Parola ({user_access} / 3) :').strip()
         if user_password == users[user_name]['Password']:
             return True
         user_access -= 1
+        if user_access:
+            print('Girmiş olduğunuz parola hatalı! Lütfen tekrar deneyin...')
+            sleep_screen()
     clear_screen()
-    print('3 defa hatalı paralo girdiniz! Çıkış yapılıyor...')
-    sleep(2)
+    print('3 defa hatalı paralo girdiniz!')
+    sleep_screen()
     clear_screen()
     return False
 
-def home_page(user_name: str):
+
+def home_page(user_name: str) -> str:
     """
     This function writes the main menu and user name to the screen
     Input : String
@@ -118,17 +138,19 @@ def home_page(user_name: str):
             print('Hatalı giriş yaptınız!')
         return False
 
+
 def user_password_change(user_name: str) -> str:
     """
     This function checks the user password and checks the rules for setting 
     new passwords.
-    
+
     Input : String
     Output : String
     """
     user_password = password_control(user_name)
     if user_password:
         new_password_access = 3
+        pass_has_char = False
         character_is_lower = False
         character_is_upper = False
         while new_password_access:
@@ -145,20 +167,23 @@ def user_password_change(user_name: str) -> str:
                 f'Yeni parola girin ({new_password_access} / 3) :')
             if len(new_user_password) >= 8:
                 for character in new_user_password:
-                    if character.islower():
+                    if character in special_characters:
+                        pass_has_char = True
+                    elif character.islower():
                         character_is_lower = True
                     elif character.isupper():
                         character_is_upper = True
-                    if character_is_lower and character_is_upper:
-                        return user_repeat_password_check(user_name,
-                                                          new_user_password)
+                if character_is_lower and character_is_upper and pass_has_char:
+                    return user_repeat_password_check(user_name,
+                                                      new_user_password)
                 new_password_access -= 1
             else:
                 new_password_access -= 1
         print('Parola oluşturma kurallarına uygun giriş yapınız!')
-        sleep(2)
+        sleep_screen()
         return home_page(user_name)
     return home_page(user_name)
+
 
 def user_repeat_password_check(user_name: str, new_user_password: str) -> str:
     """
@@ -172,7 +197,8 @@ def user_repeat_password_check(user_name: str, new_user_password: str) -> str:
         users[user_name].update({'Password': new_user_password})
         return home_page(user_name)
     print('Parolalar aynı değil!')
-    sleep(2)
+    sleep_screen()
     return home_page(user_name)
+
 
 login_form()
